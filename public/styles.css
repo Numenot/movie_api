@@ -1,0 +1,12 @@
+.documentation__body__endpoints {
+margin-top: 2rem;
+}
+
+.table_endpoints {
+width: 100%;
+}
+
+td {
+padding: 5px;
+border: 1px solid black;
+}

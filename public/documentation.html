@@ -3,12 +3,117 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
     <title>myFlix API Documentation</title>
   </head>
   <body>
     <h1>myFlix API Documentation</h1>
     <div class="documentation__top__description">
       This is a REST API for the “myFlix” application. This API interacts with a database that stores data about different movies.
+    </div>
+    <div class="documentation__body__endpoints">
+      <table class="table_endpoints">
+        <tr>
+          <th>Logic</th>
+          <th>URL</th>
+          <th>HTTP Method</th>
+          <th>Request body data format</th>
+          <th>Response body data format</th>
+        </tr>
+        <tr>
+          <td>Return a list of ALL movies</td>
+          <td>/movies</td>
+          <td>GET</td>
+          <td>None</td>
+          <td>A JSON object holding data about all the movies</td>
+        </tr>
+        <tr>
+          <td>Return data about a movie (genre, description, etc..) by title</td>
+          <td>/movies/[Title]</td>
+          <td>GET</td>
+          <td>None</td>
+          <td>
+            A JSON object holding data <br>
+            about a single movie, <br>
+            containing an ID, title, description, genre, director, etc.. Example: <br>
+            { <br>
+            id : 1, <br>
+            title : "Pulp Fiction", <br>
+            genre : "Crime/Drama", <br>
+            director: "Quentin Tarantino", <br>
+            description: "In the realm of underworld, a series of incidents <br>
+            intertwines the lives of two Los Angeles mobsters, a gangster's <br>
+            wife, a boxer and two small-time criminals." <br>
+            }
+          </td>
+        </tr>
+        <tr>
+          <td>Return data about a director (bio, birth year, death year) by name</td>
+          <td>/directors/[Name]</td>
+          <td>GET</td>
+          <td>None</td>
+          <td>A JSON object holding data <br>
+          about a director, <br>
+          containing an ID, bio, birth year and death year. Example: <br>
+          { <br>
+          id : 3, <br>
+          name : "George Andrew Romero", <br>
+          bio : "Romero is often described as an influential pioneer of the horror film genre and has been called the 'Father of the Zombie Film'.", <br>
+          birthYear: "1940", <br>
+          deathYear: "2017" <br>
+          } </td>
+        </tr>
+        <tr>
+          <td>Allow new users to register</td>
+          <td>/users</td>
+          <td>POST</td>
+          <td>A JSON object holding data <br>
+          about the new user registering, <br>
+          containing a username, email and password. Example: <br>
+          { <br>
+          username : "MoviesRock1995", <br>
+          email : "moviesrock1995@gmail.com", <br>
+          password : "random-1234567" <br>
+          } </td>
+          <td>A JSON object holding data <br>
+          about the new user, <br>
+          containing a username, email and password, and an ID. Example: <br>
+          { <br>
+          id: 395, <br>
+          username : "MoviesRock1995", <br>
+          email : "moviesrock1995@gmail.com", <br>
+          password : "random-1234567" <br>
+          } </td>
+        </tr>
+        <tr>
+          <td>Allow users to update their user info (username)</td>
+          <td>/users/[Username]</td>
+          <td>PUT</td>
+          <td>None</td>
+          <td>A text message indicating the information that was updated.</td>
+        </tr>
+        <tr>
+          <td>Allow users to add a movie to their list of favorites</td>
+          <td>/users/[Username]/favorites</td>
+          <td>POST</td>
+          <td>None</td>
+          <td>A text message indicating whether the movie was successfully added to the favorites.</td>
+        </tr>
+        <tr>
+          <td>Allow users to remove a movie from their list of favorites</td>
+          <td>/users/[Username]/favorites</td>
+          <td>DELETE</td>
+          <td>None</td>
+          <td>A text message indicating whether the movie was successfully removed from the list.</td>
+        </tr>
+        <tr>
+          <td>Allow existing users to deregister</td>
+          <td>/users/[Username]</td>
+          <td>DELETE</td>
+          <td>None</td>
+          <td>A text message indicating whether the user was successfully able to deregister.</td>
+        </tr>
+      </table>
     </div>
   </body>
 </html>
