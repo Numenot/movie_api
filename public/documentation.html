@@ -37,19 +37,23 @@
             about a single movie, <br>
             containing an ID, title, description, genre, director, etc.. Example: <br>
             { <br>
-            movieId : 1, <br>
-            title : "Pulp Fiction", <br>
-            genre : "Crime/Drama", <br>
-            director: "Quentin Tarantino", <br>
-            description: "In the realm of underworld, a series of incidents <br>
-            intertwines the lives of two Los Angeles mobsters, a gangster's <br>
-            wife, a boxer and two small-time criminals." <br>
+            _id : 1, <br>
+            Title : "Pulp Fiction", <br>
+            Genre : { <br>
+              Name: "Action", <br>
+              Description: "Action film is a film genre in which the protagonist or protagonists are thrust into a series of events that typically include violence, extended fighting, physical feats, rescues and frantic chases." <br>
+            }, <br>
+            Director: { <br>
+              Name: "Quentin Tarantino", <br>
+              Bio: "Quentin Jerome Tarantino is an American film director, screenwriter, producer, film critic, and actor." <br>
+            }, <br>
+            Description: "In the realm of underworld, a series of incidents intertwines the lives of two Los Angeles mobsters, a gangster's wife, a boxer and two small-time criminals." <br>
             }
           </td>
         </tr>
         <tr>
           <td>Return data about a genre by name</td>
-          <td>/movies/genres/[Name]</td>
+          <td>/genres/[Name]</td>
           <td>GET</td>
           <td>None</td>
           <td>
@@ -57,11 +61,9 @@
             about a genre, containing<br>
             an ID, name and description. Example: <br>
             { <br>
-            genreId : 32, <br>
-            name : "Horror", <br>
-            description : "Horror is a genre of film and television whose <br>
-            purpose is to create feelings of fear, dread, disgust, and <br>
-            terror in the audience. <br>
+            _id : 32, <br>
+            Name : "Horror", <br>
+            Description : "Horror is a genre of film and television whose purpose is to create feelings of fear, dread, disgust, and terror in the audience. <br>
             }
           </td>
         </tr>
@@ -74,11 +76,11 @@
           about a director, <br>
           containing an ID, bio, birth year and death year. Example: <br>
           { <br>
-          directorId : 3, <br>
+          _id : 3, <br>
           name : "George Andrew Romero", <br>
           bio : "Romero is often described as an influential pioneer of the horror film genre and has been called the 'Father of the Zombie Film'.", <br>
-          birthYear: "1940", <br>
-          deathYear: "2017" <br>
+          Birth: "1940", <br>
+          Death: "2017" <br>
           } </td>
         </tr>
         <tr>
@@ -89,39 +91,43 @@
           about the new user registering, <br>
           containing a username, email and password. Example: <br>
           { <br>
-          username : "MoviesRock1995", <br>
-          email : "moviesrock1995@gmail.com", <br>
-          password : "random-1234567" <br>
+            Username : "MoviesRock1995", <br>
+            Email : "moviesrock1995@gmail.com", <br>
+            Password : "random-1234567", <br>
+            Birthday : "09/02/93" <br>
           } </td>
           <td>A JSON object holding data <br>
           about the new user, <br>
           containing a username, email and password, and an ID. Example: <br>
           { <br>
-          userId: 395, <br>
-          username : "MoviesRock1995", <br>
-          email : "moviesrock1995@gmail.com", <br>
-          password : "random-1234567" <br>
+            _id: 395, <br>
+            Username : "MoviesRock1995", <br>
+            Email : "moviesrock1995@gmail.com", <br>
+            Password : "random-1234567", <br>
+            Birthday : "09/02/93" <br>
           } </td>
         </tr>
         <tr>
-          <td>Allow users to update their user info (username)</td>
-          <td>/users/[userId]</td>
+          <td>Allow users to update their user info</td>
+          <td>/users/[Username]</td>
           <td>PUT</td>
           <td>A JSON object holding data <br>
-          about the user information to update, <br>
-          accompanied by the user unique identifier (id). Example: <br>
+          about the user information to update. Example: <br>
           { <br>
-          userId: 395, <br>
-          username : "MoviesRock1995v2" <br>
+            Username : "MoviesRock1995", <br>
+            Email : "moviesrock1995@gmail.com", <br>
+            Password : "newpassword-1234567", <br>
+            Birthday : "09/02/93" <br>
           } </td>
           <td>A JSON object holding data <br>
           about the user, including the <br>
-          new username. Example: <br>
+          new data. Example: <br>
           { <br>
-          userId: 395, <br>
-          username : "MoviesRock1995v2", <br>
-          email : "moviesrock1995@gmail.com", <br>
-          password : "random-1234567" <br>
+            _id: 395, <br>
+            Username : "MoviesRock1995", <br>
+            Email : "moviesrock1995@gmail.com", <br>
+            Password : "newpassword-1234567", <br>
+            Birthday : "09/02/93" <br>
           } </td>
         </tr>
         <tr>
@@ -129,14 +135,14 @@
           <td>/users/[Username]/favorites/[movieId]</td>
           <td>POST</td>
           <td>None</td>
-          <td>JSON object with updated list of favorites</td>
+          <td>JSON object of the user with updated list of favorites</td>
         </tr>
         <tr>
           <td>Allow users to remove a movie from their list of favorites</td>
           <td>/users/[Username]/favorites/[movieId]</td>
           <td>DELETE</td>
           <td>None</td>
-          <td>JSON object with updated list of favorites</td>
+          <td>JSON object of the user with updated list of favorites</td>
         </tr>
         <tr>
           <td>Allow existing users to deregister</td>

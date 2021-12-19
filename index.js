@@ -1,116 +1,184 @@
 const express = require('express'),
-  morgan = require('morgan'),
-  bodyParser = require('body-parser'),
-  uuid = require('uuid');
+      morgan = require('morgan'),
+      bodyParser = require('body-parser'),
+      uuid = require('uuid');
+
+//Integrating mongoose and models in the REST API
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+const Movies = Models.Movie;
+const Users = Models.User;
+const Directors = Models.Director;
+const Genres  = Models.Genre;
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
 
 app.use(bodyParser.json());
-
-let movies = [
-  {
-    title: 'Lord Of The Rings: Return Of The King',
-    director: 'Peter Jackson',
-    description: 'The former Fellowship members prepare for the final battle. While Frodo and Sam approach Mount Doom to destroy the One Ring, they follow Gollum, unaware of the path he is leading them to.',
-    genre: 'Fantasy/Adventure',
-    movieId: '1'
-  },
-  {
-    title: 'Pulp Fiction',
-    director: 'Quentin Tarantino',
-    description: 'In the realm of underworld, a series of incidents intertwines the lives of two Los Angeles mobsters, a gangsters wife, a boxer and two small-time criminals.',
-    genre: 'Crime/Drama',
-    movieId: '2'
-  },
-  {
-    title: 'The Silence of the Lambs',
-    director: 'Jonathan Demme',
-    description: 'Clarice Starling, an FBI agent, seeks help from Hannibal Lecter, a psychopathic serial killer and former psychiatrist, in order to apprehend another serial killer who has been claiming female victims',
-    genre: 'Thriller/Horror',
-    movieId: '3'
-  },
-  {
-    title: 'No Country for Old Men',
-    director: 'Coen Brothers',
-    description: 'A hunters life takes a drastic turn when he discovers two million dollars while strolling through the aftermath of a drug deal.',
-    genre: 'Crime/Western',
-    movieId: '4'
-  },
-  {
-    title: 'Alien',
-    director: 'Ridley Scott',
-    description: 'The crew of a spacecraft, Nostromo, intercept a distress signal from a planet and set out to investigate it. However, to their horror, they are attacked by an alien which later invades their ship.',
-    genre: 'Sci-fi/Horror',
-    movieId: '5'
-  }
-];
-
-let directors = [
-  {
-    name: 'Jonathan Demme',
-    bio: 'Robert Jonathan Demme was an American film director, producer, and screenwriter of film and television who earned widespread acclaim.',
-    yearOfBirth: '1944',
-    yearOfDeath: '2017',
-    directorId: '136'
-  }
-];
-
-let genres = [
-  {
-    name: 'Horror',
-    description: 'Horror is a genre of film and television whose purpose is to create feelings of fear, dread, disgust, and terror in the audience.',
-    genreId: '32'
-  }
-];
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(morgan('common'));
 
 // Return a list of ALL movies
 app.get('/movies', (req, res) => {
-  res.json(movies);
+  Movies.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // Return data about a movie (genre, description, etc..) by title
-app.get('/movies/:title', (req, res) => {
-  res.json(movies.find((movie) =>
-    { return movie.title === req.params.title }));
+app.get('/movies/:Title', (req, res) => {
+  Movies.findOne({ Title: req.params.Title })
+    .then((movie) => {
+      res.json(movie);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // Return data about a genre (description) by name
-app.get('/movies/genres/:name', (req, res) => {
-  res.json(genres.find((genre) =>
-    { return genre.name === req.params.name }));
+app.get('/genres/:Name', (req, res) => {
+  Genres.findOne({ Name: req.params.Name })
+    .then((genre) => {
+      res.json(genre);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // Return data about a director (bio, birth year, death year) by name
-app.get('/directors/:name', (req, res) => {
-  res.json(directors.find((director) =>
-    { return director.name === req.params.name }));
+app.get('/directors/:Name', (req, res) => {
+  Directors.findOne({ Name: req.params.Name })
+    .then((director) => {
+      res.json(director);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
-// Allow new users to register
+/*Allows new users to register
+Data in JSON in this format:
+{
+  ID: Integer,
+  Username: String,
+  Password: String,
+  Email: String,
+  Birthday: Date
+}*/
 app.post('/users', (req, res) => {
-  res.send('JSON object holding data about the new user, containing a username, email and password, and an id');
+  Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + 'already exists');
+      } else {
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) =>{res.status(201).json(user) })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
-// Allow users to update their user info (username)
-app.put('/users/:userId', (req, res) => {
-  res.send('JSON object holding data about the user, including the username that was updated.');
+/*Update a user's info, by username.
+We’ll expect JSON in this format
+{
+  Username: String,
+  (required)
+  Password: String,
+  (required)
+  Email: String,
+  (required)
+  Birthday: Date
+}*/
+app.put('/users/:Username', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
+    {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
+  { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if(err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
-// Allow users to add a movie to their list of favorites
-app.put('/users/:username/favorites/:movieId', (req, res) => {
-  res.send('JSON object with updated list of favorites');
+// Add a movie to a user's list of favorites
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
 // Allow users to remove a movie from their list of favorites
-app.delete('/users/:username/favorites/:movieId', (req, res) => {
-  res.send('JSON object with updated list of favorites');
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $pull: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
-// Allow existing users to deregister
-app.delete('/users/:username', (req, res) => {
-  res.send('Delete user and show a text message indicating the user was able to deregister');
+// Allow existing users to deregister/delete their user
+app.delete('/users/:Username', (req, res) => {
+  Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // main index page
