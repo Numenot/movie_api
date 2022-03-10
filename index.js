@@ -43,13 +43,17 @@ const passport = require('passport');
 require('./passport');
 
 /**
+ * API endpoints. Example request and response bodies are provided in the documentation.html file.
+ */
+
+/**
  * Return a list of ALL movies
  * @method GET
  * @example /movies
  * @param {string} URL
  * @param {authenticationCallback} 
  * @param {requestCallback}
- * @returns {Object} Array of all movies in database.
+ * @returns {array} Array of all movies in database.
  */
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.find()
