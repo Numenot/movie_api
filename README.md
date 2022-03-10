@@ -1,6 +1,11 @@
 # Movie API
 
-REST API for an application called “myFlix” that interacts with a database that stores data about different movies
+- REST API for an application called “myFlix” that interacts with a database that stores data about different movies
+- API Hosted here: https://myflixmovieapp-myflix.herokuapp.com/
+
+# API Documentation
+
+- Documentation built with JSDoc, found in */out/index.js.html* file.
 
 # User Stories
 
